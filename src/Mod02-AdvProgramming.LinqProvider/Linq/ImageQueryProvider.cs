@@ -11,25 +11,25 @@ namespace Mod02_AdvProgramming.LinqProvider.Linq
 
     internal class ImageQueryProvider : BaseQueryProvider
         {
-            // Force developers to pass a ImageService in the constructor
+            // Force developers to pass a ImagesIndexer in the constructor
             protected ImageQueryProvider() { }
 
-            private ImageService _imageService;
+            private ImagesIndexer _imagesIndexer;
 
-            public ImageQueryProvider(ImageService _imageService)
+            public ImageQueryProvider(ImagesIndexer _imagesIndexer)
             {
-                if (_imageService == null)
+                if (_imagesIndexer == null)
                 {
-                    throw new ArgumentNullException("_imageService");
+                    throw new ArgumentNullException("_imagesIndexer");
                 }
-                this._imageService = _imageService;
+                this._imagesIndexer = _imagesIndexer;
             }
 
             #region BaseQueryProvider abstract methods implementation
             public override object Execute(Expression expression)
             {
                 ImageQueryParameters parameters = this.Translate(expression);
-                return this._imageService.ImagesSearch(parameters.Filter, parameters.MaxImages);
+                return this._imagesIndexer.ImagesSearch(parameters.Filter, parameters.MaxImages);
             }
 
             public override IQueryable CreateQuery(Expression expression)

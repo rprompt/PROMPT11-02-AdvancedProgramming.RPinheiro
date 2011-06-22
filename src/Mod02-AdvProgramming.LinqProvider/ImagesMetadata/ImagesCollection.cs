@@ -6,7 +6,7 @@ namespace Mod02_AdvProgramming.LinqProvider.ImagesMetadata
 
     public class ImagesCollection
     {
-        internal ImageService ImagesService { get; set; } 
+        internal ImagesIndexer ImagesService { get; set; } 
 
         public static IEnumerable<FileInfo> GetDirectoryEnumerator(DirectoryInfo rootDir)
         {

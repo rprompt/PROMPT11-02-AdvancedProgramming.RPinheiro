@@ -5,12 +5,12 @@ namespace Mod02_AdvProgramming.LinqProvider.Linq
 
     internal class ImageQueryParameters
     {
-            public ImageService.QueryFilter Filter { get; set; }
+            public ImagesIndexer.QueryFilter Filter { get; set; }
             public int MaxImages { get; set; }
 
             public ImageQueryParameters()
             {
-                this.Filter = new ImageService.QueryFilter();
+                this.Filter = new ImagesIndexer.QueryFilter();
                 this.MaxImages = -1;
             }
 

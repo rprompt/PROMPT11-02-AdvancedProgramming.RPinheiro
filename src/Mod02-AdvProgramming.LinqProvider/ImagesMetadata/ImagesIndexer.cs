@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Mod02_AdvProgramming.LinqProvider.ImagesMetadata
 {
-    public partial class ImageService
+    public partial class ImagesIndexer
     {
 
 
