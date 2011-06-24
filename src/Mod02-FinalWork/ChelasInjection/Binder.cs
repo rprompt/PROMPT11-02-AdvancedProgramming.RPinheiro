@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ChelasInjection
 {
@@ -6,9 +7,11 @@ namespace ChelasInjection
 
     public abstract class Binder
     {
+        internal Dictionary<Type,Type> binds = new Dictionary<Type,Type>(); 
+        
         public void Configure()
         {
-            throw new NotImplementedException();
+            InternalConfigure();
         }
 
         protected abstract void InternalConfigure();
@@ -18,13 +21,17 @@ namespace ChelasInjection
 
         public ITypeBinder<Target> Bind<Source, Target>()
         {
-            throw new NotImplementedException();
+            //var xx = new xxxx;
+            //binds.Add(typeof(Source), xx);
+            binds.Add(typeof(Source),typeof(Target)) ;
+            //return xx
+            return null;
         }
 
 
         public ITypeBinder<Source> Bind<Source>()
         {
-            throw new NotImplementedException();
+            return Bind<Source, Source>();
         }
 
     }

@@ -8,11 +8,11 @@ namespace ChelasInjection
 
         ITypeBinder<T> WithNoArgumentsConstructor();
 
-        ITypeBinder<T> WithSingletonActivation();
+        //ITypeBinder<T> WithSingletonActivation();
         
-        ITypeBinder<T> WithPerRequestActivation();
+        //ITypeBinder<T> WithPerRequestActivation();
 
-        IActivationBinder<T> WithActivation { get; set; }
+        IActivationBinder<T> WithActivation { get; }
         ITypeBinder<T> InitializeObjectWith(Action<T> initialization);
 
         void WhenArgumentHas<TAttribute>() where TAttribute : Attribute;
