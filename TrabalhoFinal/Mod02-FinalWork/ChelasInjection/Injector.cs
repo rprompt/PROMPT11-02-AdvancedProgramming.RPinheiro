@@ -43,7 +43,7 @@ namespace ChelasInjection
             //calltypes.Add(t);            
             
 
-            //retorna se existe o parametro associado ao ISomeInterface7 ... SomeInterface7Default>();
+            //retorna se existe o parametro associado ao tipo - ex: ISomeInterface7 ... SomeInterface7Default>();
             //
             TypeConfig bt;
             bool found = _myBinder.binds.TryGetValue(t, out bt);
@@ -58,8 +58,8 @@ namespace ChelasInjection
                 }
                 else
                 {
-                    throw new ChelasInjectionException(string.Format("Tipo {0} não existente no myBinder",
-                                                                     t.FullName));
+                   _myBinder.binds[t] = new  TypeConfig{ Type = t};
+                  found = _myBinder.binds.TryGetValue(t, out bt);
                 }
             }
 
@@ -68,16 +68,8 @@ namespace ChelasInjection
             {
                 Console.WriteLine(bt.Type.FullName);
 
-                //Vamos buscar a informação do constructor sem parametros [0] do SomeInterface7Default>()
-                //ConstructorInfo ci = t.GetConstructor(new Type[0]);
 
                 //Se existir contructor sem parametros vamos devolver uma instancia criada com esse constructor)
-                //if (ci != null)
-                //{
-                //    return (T)ci.Invoke(new object[0]);
-                //}
-
-
                 if (bt.NoArgsCtor)
                 {
                     ConstructorInfo cix = bt.Type.GetConstructor(new Type[0]);
@@ -85,8 +77,8 @@ namespace ChelasInjection
                     {
                         var res = cix.Invoke(new object[0]);
 
-                        if (!resolved.ContainsKey(bt.Type))
-                            resolved.Add(bt.Type,res);
+                        if (!resolved.ContainsKey(t))
+                            resolved.Add(t,res);
 
                         if (bt.issingleton)
                         {
@@ -94,17 +86,11 @@ namespace ChelasInjection
                                 singletons.Add(t, res);
                         }
                         return res;
-
-                        //if (bt.issingleton)
-                        //{
-                        //    if  (!singletons.ContainsKey(bt.Type))
-                        //         singletons.Add(bt.Type, res);
-                        //}
-                        //return res;
                     }
                 }
 
 
+                //Se existir contructor com argumentos vamos devolver uma instancia criada com esse constructor)
                 if (bt.CArgs != null)
                 {
                     ConstructorInfo cix = bt.Type.GetConstructor(bt.CArgs);
@@ -136,8 +122,8 @@ namespace ChelasInjection
 
                         var res = cix.Invoke(args);
 
-                        if (!resolved.ContainsKey(bt.Type))
-                            resolved.Add(bt.Type, res);
+                        if (!resolved.ContainsKey(t))
+                            resolved.Add(t, res);
 
                         if (bt.issingleton)
                         {
@@ -149,14 +135,18 @@ namespace ChelasInjection
                 }
 
 
+
+                //Outros contructores
                 ConstructorInfo[] cia = bt.Type.GetConstructors();
                 
+                // verifica se estamos na presença de mais do que um constructor
                 if (cia.Where(ci => ci.IsDefined(typeof(DefaultConstructorAttribute),false)).Count() > 1)
                 {                    
                    throw new MultipleDefaultConstructorAttributesException("Foram encontrados múltiplos constructores")
                     ;
                 }
 
+                //Constructor com Default
                 ConstructorInfo cDefault =
                     cia.SingleOrDefault(d => d.IsDefined(typeof (DefaultConstructorAttribute), false));
                 
@@ -185,9 +175,10 @@ namespace ChelasInjection
                     foreach (var pi in pia)
                     {
                         if (!_myBinder.binds.ContainsKey(pi.ParameterType))
+                        {
                             cgood = false;
-                            break
-                        ;
+                            break;                            
+                        }
                     }
 
                     if (cgood)
@@ -208,8 +199,8 @@ namespace ChelasInjection
                             bt.Initialize(res);
                         }
 
-                        if (!resolved.ContainsKey(bt.Type))
-                            resolved.Add(bt.Type, res);
+                        if (!resolved.ContainsKey(t))
+                            resolved.Add(t, res);
                         
                         if (bt.issingleton)
                         {
@@ -219,10 +210,11 @@ namespace ChelasInjection
                         return res;
                     }
                 }
-
+           
             }
             throw new ChelasInjectionException(string.Format("Bind não encontrado para o Type {0} ", t.FullName));
         }
+    
 
         public T GetInstance<T, TA>() where TA : Attribute
         {
